@@ -12,15 +12,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import static android.os.Build.VERSION_CODES.N;
 
 /**
  * Created by lamkeong on 6/20/2017.
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
-//    private String[] mMovieNames;
-//    private String[] mMoviePosters;
+
     private List<Movies> moviesList;
 
     private final MovieClickListener listener;
@@ -29,25 +27,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         listener = movieClickListener;
     }
 
-    public interface MovieClickListener{
+    public interface MovieClickListener {
         void onListItemClick(String movieTitle, String posterUrl, String sypnosis, double rating, String releasedDate);
-    };
+    }
 
-//    public void setMovieNames(String[] movieNames) {
-//        this.mMovieNames = movieNames;
-//        notifyDataSetChanged();
-//    }
-//
-//    public void setMoviePosters(String[] moviePosters) {
-//        this.mMoviePosters = moviePosters;
-//        notifyDataSetChanged();
-//    }
-    public void setMoviesList(List<Movies>moviesList){
+
+    public void setMoviesList(List<Movies> moviesList) {
         this.moviesList = moviesList;
 
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView movieNameTextView;
         ImageView moviePoster;
 
@@ -61,7 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             String releasedDate = selectedMovie.getReleasedDate();
 
 
-            listener.onListItemClick(movieTitle,posterUrl,sypnosis,rating,releasedDate);
+            listener.onListItemClick(movieTitle, posterUrl, sypnosis, rating, releasedDate);
         }
 
         public MovieViewHolder(View itemView) {
@@ -76,7 +66,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         void bind(Context context, int position) {
             Movies currentMovie = moviesList.get(position);
             movieNameTextView.setText(currentMovie.getMovieTitle());
-            Picasso.with(context).load(currentMovie.getPosterURL()).into(moviePoster);
+            Picasso.with(context).load(currentMovie.getPosterURL()).placeholder(R.drawable.loading_icon).error(R.drawable.error_icon).into(moviePoster);
         }
     }
 
@@ -92,7 +82,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         Context context = holder.itemView.getContext();
-        holder.bind(context,position);
+        holder.bind(context, position);
     }
 
     @Override

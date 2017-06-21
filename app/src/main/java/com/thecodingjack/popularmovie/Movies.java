@@ -1,21 +1,22 @@
 package com.thecodingjack.popularmovie;
 
-import org.json.JSONObject;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by lamkeong on 6/20/2017.
  */
 
-public class Movies {
-    private JSONObject fullMovieJsonData;
+public class Movies implements Parcelable {
+
     private String movieTitle;
     private String posterURL;
     private String synopsis;
     private double rating;
     private String releasedDate;
 
-    public Movies(JSONObject fullMovieJsonData, String movieTitle, String posterURL, String synopsis, double rating, String releasedDate) {
-        this.fullMovieJsonData = fullMovieJsonData;
+    public Movies(String movieTitle, String posterURL, String synopsis, double rating, String releasedDate) {
+
         this.movieTitle = movieTitle;
         this.posterURL = posterURL;
         this.synopsis = synopsis;
@@ -23,51 +24,58 @@ public class Movies {
         this.releasedDate = releasedDate;
     }
 
-    public JSONObject getFullMovieJsonData() {
-        return fullMovieJsonData;
-    }
-
-    public void setFullMovieJsonData(JSONObject fullMovieJsonData) {
-        this.fullMovieJsonData = fullMovieJsonData;
-    }
 
     public String getMovieTitle() {
         return movieTitle;
-    }
-
-    public void setMovieTitle(String movieTitle) {
-        this.movieTitle = movieTitle;
     }
 
     public String getPosterURL() {
         return posterURL;
     }
 
-    public void setPosterURL(String posterURL) {
-        this.posterURL = posterURL;
-    }
-
     public String getSynopsis() {
         return synopsis;
-    }
-
-    public void setSynopsis(String synopsis) {
-        this.synopsis = synopsis;
     }
 
     public double getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
     public String getReleasedDate() {
         return releasedDate;
     }
 
-    public void setReleasedDate(String releasedDate) {
-        this.releasedDate = releasedDate;
+    @Override
+    public int describeContents() {
+        return 0;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.movieTitle);
+        dest.writeString(this.posterURL);
+        dest.writeString(this.synopsis);
+        dest.writeDouble(this.rating);
+        dest.writeString(this.releasedDate);
+    }
+
+    protected Movies(Parcel in) {
+        this.movieTitle = in.readString();
+        this.posterURL = in.readString();
+        this.synopsis = in.readString();
+        this.rating = in.readDouble();
+        this.releasedDate = in.readString();
+    }
+
+    public static final Parcelable.Creator<Movies> CREATOR = new Parcelable.Creator<Movies>() {
+        @Override
+        public Movies createFromParcel(Parcel source) {
+            return new Movies(source);
+        }
+
+        @Override
+        public Movies[] newArray(int size) {
+            return new Movies[size];
+        }
+    };
 }

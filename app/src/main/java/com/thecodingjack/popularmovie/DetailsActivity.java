@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -19,6 +18,7 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView mSypnosis;
     private TextView mRating;
     private TextView mReleasedDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,16 +27,16 @@ public class DetailsActivity extends AppCompatActivity {
 
         mMovieTitle = (TextView) findViewById(R.id.display_movie_title);
         mPosterImage = (ImageView) findViewById(R.id.display_movie_poster);
-        mSypnosis = (TextView)findViewById(R.id.display_movie_sypnosis);
+        mSypnosis = (TextView) findViewById(R.id.display_movie_sypnosis);
         mRating = (TextView) findViewById(R.id.display_movie_rating);
-        mReleasedDate = (TextView)findViewById(R.id.display_movie_date);
+        mReleasedDate = (TextView) findViewById(R.id.display_movie_date);
 
         Intent intent = getIntent();
         if (intent.hasExtra("title")) {
             String displayInput = intent.getStringExtra("title");
             mMovieTitle.setText(displayInput);
         }
-        if(intent.hasExtra("posterURL")){
+        if (intent.hasExtra("posterURL")) {
             String posterURL = intent.getStringExtra("posterURL");
             Picasso.with(this).load(posterURL).into(mPosterImage);
         }
@@ -52,10 +52,10 @@ public class DetailsActivity extends AppCompatActivity {
             String displayInput = String.format(intent.getStringExtra("releasedDate"));
             SimpleDateFormat df = new SimpleDateFormat("yyyy");
             Date date;
-            try{
+            try {
                 date = df.parse(displayInput);
-                displayInput=df.format(date);
-            }catch (ParseException e){
+                displayInput = df.format(date);
+            } catch (ParseException e) {
                 e.printStackTrace();
             }
             mReleasedDate.setText(displayInput);

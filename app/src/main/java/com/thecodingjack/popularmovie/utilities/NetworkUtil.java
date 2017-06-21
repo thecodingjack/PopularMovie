@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by lamkeong on 6/20/2017.
@@ -41,47 +40,48 @@ public final class NetworkUtil {
         return url;
     }
 
-    public static String getResponseFromHttp(URL url) throws IOException{
+    public static String getResponseFromHttp(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try{
+        try {
+            urlConnection.setReadTimeout(10000);
+            urlConnection.setConnectTimeout(15000);
             InputStream in = urlConnection.getInputStream();
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
 
-            if(scanner.hasNext()){
+            if (scanner.hasNext()) {
                 return scanner.next();
-            }else{
+            } else {
                 return null;
             }
-        }finally {
+        } finally {
             urlConnection.disconnect();
         }
     }
 
-    public static List<Movies> extractJSONData(String jsonString)throws JSONException{
-        if(TextUtils.isEmpty(jsonString)){
+    public static List<Movies> extractJSONData(String jsonString) throws JSONException {
+        if (TextUtils.isEmpty(jsonString)) {
             return null;
         }
-        List<Movies> moviesList= new ArrayList<>();
+        List<Movies> moviesList = new ArrayList<>();
 
         JSONObject movieJson = new JSONObject(jsonString);
         JSONArray movieArray = movieJson.getJSONArray("results");
-//        String [] parsedMovieData = new String[movieArray.length()];
 
-        for(int i = 0; i<movieArray.length();i++){
+
+        for (int i = 0; i < movieArray.length(); i++) {
             JSONObject movieObject = movieArray.getJSONObject(i);
             String movieTitle = movieObject.getString("title");
             String posterPath = POSTER_BASE_URL + movieObject.getString("poster_path");
             String sypnosis = movieObject.getString("overview");
             double rating = movieObject.getDouble("vote_average");
-            String releasedDate= movieObject.getString("release_date");
-            Movies newMovie = new Movies(movieObject,movieTitle,posterPath,sypnosis,rating,releasedDate);
+            String releasedDate = movieObject.getString("release_date");
+            Movies newMovie = new Movies(movieTitle, posterPath, sypnosis, rating, releasedDate);
             moviesList.add(newMovie);
-//            parsedMovieData[i]=posterPath +"," +movieTitle;
 
 
         }
         return moviesList;
-//        return parsedMovieData;
+
     }
 }
