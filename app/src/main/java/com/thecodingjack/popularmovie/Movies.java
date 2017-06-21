@@ -6,21 +6,21 @@ import org.json.JSONObject;
  * Created by lamkeong on 6/20/2017.
  */
 
-public class Movie {
+public class Movies {
     private JSONObject fullMovieJsonData;
     private String movieTitle;
     private String posterURL;
     private String synopsis;
     private double rating;
-    private String dateReleased;
+    private String releasedDate;
 
-    public Movie(JSONObject fullMovieJsonData, String movieTitle, String posterURL, String synopsis, double rating, String dateReleased) {
+    public Movies(JSONObject fullMovieJsonData, String movieTitle, String posterURL, String synopsis, double rating, String releasedDate) {
         this.fullMovieJsonData = fullMovieJsonData;
         this.movieTitle = movieTitle;
         this.posterURL = posterURL;
         this.synopsis = synopsis;
         this.rating = rating;
-        this.dateReleased = dateReleased;
+        this.releasedDate = releasedDate;
     }
 
     public JSONObject getFullMovieJsonData() {
@@ -63,11 +63,11 @@ public class Movie {
         this.rating = rating;
     }
 
-    public String getDateReleased() {
-        return dateReleased;
+    public String getReleasedDate() {
+        return releasedDate;
     }
 
-    public void setDateReleased(String dateReleased) {
-        this.dateReleased = dateReleased;
+    public void setReleasedDate(String releasedDate) {
+        this.releasedDate = releasedDate;
     }
 }

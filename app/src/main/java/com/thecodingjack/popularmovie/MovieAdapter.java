@@ -19,28 +19,32 @@ import static android.os.Build.VERSION_CODES.N;
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
-    private String[] mMovieNames;
-    private String[] mMoviePosters;
+//    private String[] mMovieNames;
+//    private String[] mMoviePosters;
+    private List<Movies> moviesList;
 
     private final MovieClickListener listener;
 
-    public MovieAdapter(MovieClickListener movieClickListener) {
-
+    public MovieAdapter(MovieClickListener movieClickListener, List<Movies> moviesList) {
         listener = movieClickListener;
     }
 
     public interface MovieClickListener{
-        void onListItemClick(String movieDetails);
+        void onListItemClick(String movieTitle, String posterUrl, String sypnosis, double rating, String releasedDate);
     };
 
-    public void setMovieNames(String[] movieNames) {
-        this.mMovieNames = movieNames;
-        notifyDataSetChanged();
-    }
+//    public void setMovieNames(String[] movieNames) {
+//        this.mMovieNames = movieNames;
+//        notifyDataSetChanged();
+//    }
+//
+//    public void setMoviePosters(String[] moviePosters) {
+//        this.mMoviePosters = moviePosters;
+//        notifyDataSetChanged();
+//    }
+    public void setMoviesList(List<Movies>moviesList){
+        this.moviesList = moviesList;
 
-    public void setMoviePosters(String[] moviePosters) {
-        this.mMoviePosters = moviePosters;
-        notifyDataSetChanged();
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -49,8 +53,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         @Override
         public void onClick(View v) {
-            String value = mMovieNames[getAdapterPosition()];
-            listener.onListItemClick(value);
+            Movies selectedMovie = moviesList.get(getAdapterPosition());
+            String movieTitle = selectedMovie.getMovieTitle();
+            String posterUrl = selectedMovie.getPosterURL();
+            String sypnosis = selectedMovie.getSynopsis();
+            double rating = selectedMovie.getRating();
+            String releasedDate = selectedMovie.getReleasedDate();
+
+
+            listener.onListItemClick(movieTitle,posterUrl,sypnosis,rating,releasedDate);
         }
 
         public MovieViewHolder(View itemView) {
@@ -63,8 +74,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
 
         void bind(Context context, int position) {
-            movieNameTextView.setText(mMovieNames[position]);
-            Picasso.with(context).load(mMoviePosters[position]).into(moviePoster);
+            Movies currentMovie = moviesList.get(position);
+            movieNameTextView.setText(currentMovie.getMovieTitle());
+            Picasso.with(context).load(currentMovie.getPosterURL()).into(moviePoster);
         }
     }
 
@@ -85,7 +97,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public int getItemCount() {
-        if (mMovieNames == null) return 0;
-        return mMovieNames.length;
+        if (moviesList == null) return 0;
+        return moviesList.size();
     }
 }
