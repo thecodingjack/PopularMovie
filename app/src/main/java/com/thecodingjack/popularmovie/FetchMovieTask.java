@@ -32,10 +32,8 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<Movies>> {
             return null;
         }
         URL url = NetworkUtil.buildUrl(params[0]);
-        Log.v("Testing","URL: " +url);
         try {
             String jsonResponse = NetworkUtil.getResponseFromHttp(url);
-            Log.v("Testing",jsonResponse);
             return NetworkUtil.extractJSONData(jsonResponse);
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,7 +54,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<Movies>> {
 
 
         mMovieAdapter.setMoviesList(moviesList);
-        Log.v("Testing", moviesList.get(1).getMovieTitle());
 
     }
 }

@@ -28,7 +28,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     public interface MovieClickListener {
-        void onListItemClick(String movieTitle, String posterUrl, String sypnosis, double rating, String releasedDate);
+        void onListItemClick(int movieID, String movieTitle, String posterUrl, String sypnosis, double rating, String releasedDate);
     }
 
 
@@ -38,12 +38,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView movieNameTextView;
         ImageView moviePoster;
 
         @Override
         public void onClick(View v) {
             Movies selectedMovie = moviesList.get(getAdapterPosition());
+            int movieID = selectedMovie.getMovieID();
             String movieTitle = selectedMovie.getMovieTitle();
             String posterUrl = selectedMovie.getPosterURL();
             String sypnosis = selectedMovie.getSynopsis();
@@ -51,13 +51,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             String releasedDate = selectedMovie.getReleasedDate();
 
 
-            listener.onListItemClick(movieTitle, posterUrl, sypnosis, rating, releasedDate);
+            listener.onListItemClick(movieID,movieTitle, posterUrl, sypnosis, rating, releasedDate);
         }
 
         public MovieViewHolder(View itemView) {
             super(itemView);
 
-            movieNameTextView = (TextView) itemView.findViewById(R.id.tv_movie_name);
             moviePoster = (ImageView) itemView.findViewById(R.id.tv_movie_poster);
 
             itemView.setOnClickListener(this);
@@ -65,7 +64,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         void bind(Context context, int position) {
             Movies currentMovie = moviesList.get(position);
-            movieNameTextView.setText(currentMovie.getMovieTitle());
             Picasso.with(context).load(currentMovie.getPosterURL()).placeholder(R.drawable.loading_icon).error(R.drawable.error_icon).into(moviePoster);
         }
     }
