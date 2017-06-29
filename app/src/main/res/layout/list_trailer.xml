@@ -2,18 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tool="http://schemas.android.com/tools"
     android:orientation="horizontal"
+    android:paddingLeft="16dp"
+    android:paddingBottom="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/trailer_playicon"
         android:layout_width="0dp"
-        android:background="@drawable/error_icon"
+        android:background="@drawable/play_icon"
+        android:layout_margin="8dp"
         android:layout_weight="1"
-        android:layout_height="80dp" />
+        android:layout_height="30dp" />
     <TextView
         android:id="@+id/trailer_number"
+        android:layout_gravity="center_vertical"
         android:layout_width="0dp"
-        android:layout_weight="4"
+        android:layout_weight="9"
         android:layout_height="wrap_content"
         tool:text="Trailer 1"/>
 
