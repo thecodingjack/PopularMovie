@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -53,18 +54,6 @@ public class DetailsActivity extends AppCompatActivity {
         mRating = (TextView) findViewById(R.id.display_movie_rating);
         mReleasedDate = (TextView) findViewById(R.id.display_movie_date);
         linearLayout = (LinearLayout) findViewById(R.id.linear_layout_trailer);
-        linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                String trailerURL = v.getTag().toString();
-//                Toast.makeText(DetailsActivity.this, trailerURL, Toast.LENGTH_SHORT).show();
-                URL url;
-                Uri uri;
-                    uri = Uri.parse("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-                    Intent intent = new Intent(Intent.ACTION_VIEW,uri);
-                startActivity(intent);
-            }
-        });
 
 
         Intent intent = getIntent();
@@ -109,16 +98,27 @@ public class DetailsActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(ArrayList<String> lists) {
+
+
                 for (int i = 0; i < lists.size(); i++) {
 
-                    View view = LayoutInflater.from(DetailsActivity.this).inflate(R.layout.list_trailer, null);
+                    View view = LayoutInflater.from(DetailsActivity.this).inflate(R.layout.list_trailer, linearLayout, false);
                     String trailerKey = lists.get(i);
                     linearLayout.addView(view);
                     TextView trailerNumber = (TextView) view.findViewById(R.id.trailer_number);
                     int trailerCount = i + 1;
-                    trailerNumber.setText("Trailer " + trailerCount + trailerKey);
+                    trailerNumber.setText("Trailer " + trailerCount);
                     view.setTag(trailerKey);
-
+                    Log.v("TEST", "TAG for position: " + i + view.getTag());
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String youTubeKEY = (String) v.getTag();
+                            Uri uri = Uri.parse("https://www.youtube.com/watch?v="+youTubeKEY);
+                            Intent trailerIntent = new Intent(Intent.ACTION_VIEW,uri);
+                            startActivity(trailerIntent);
+                        }
+                    });
                 }
             }
         }.execute();
