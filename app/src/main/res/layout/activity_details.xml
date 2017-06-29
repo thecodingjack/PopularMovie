@@ -64,6 +64,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/medium_text"
             android:layout_marginTop="@dimen/medium_padding"
             android:layout_marginLeft="@dimen/medium_padding"
             android:layout_marginRight="@dimen/medium_padding"
@@ -75,7 +77,22 @@
             android:layout_height="wrap_content">
 
         </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/medium_text"
+            android:layout_marginTop="@dimen/medium_padding"
+            android:layout_marginLeft="@dimen/medium_padding"
+            android:layout_marginRight="@dimen/medium_padding"
+            android:text="Reviews:"/>
+        <LinearLayout
+            android:id="@+id/linear_layout_reviews"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
 

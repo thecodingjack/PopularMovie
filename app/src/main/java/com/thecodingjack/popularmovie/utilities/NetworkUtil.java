@@ -1,11 +1,9 @@
 package com.thecodingjack.popularmovie.utilities;
 
-import android.content.res.Resources;
 import android.net.Uri;
 import android.text.TextUtils;
 
 import com.thecodingjack.popularmovie.Movies;
-import com.thecodingjack.popularmovie.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static android.R.id.input;
-
 
 /**
  * Created by lamkeong on 6/20/2017.
@@ -35,6 +31,7 @@ public final class NetworkUtil {
     public static final String POPULAR_PARAM = "popular";
     public static final String TOP_RATED_PARAM = "top_rated";
     public static final String VIDEO_PARAM = "videos";
+    public static final String REVIEW_PARAM = "reviews";
 
     public static URL buildUrl(String input) {
         Uri uri = Uri.parse(BASE_URL).buildUpon().appendPath(input).appendQueryParameter("api_key", API_KEY).build();

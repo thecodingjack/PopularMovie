@@ -2,34 +2,24 @@ package com.thecodingjack.popularmovie;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.thecodingjack.popularmovie.utilities.MovieUtil;
-import com.thecodingjack.popularmovie.utilities.NetworkUtil;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import static android.R.id.list;
 import static com.thecodingjack.popularmovie.MainActivity.EXTRA_MOVIEID;
 
 public class DetailsActivity extends AppCompatActivity {
@@ -39,8 +29,8 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView mRating;
     private TextView mReleasedDate;
     private int selectedMovieID;
-    private AsyncTask trailerTask;
-    private LinearLayout linearLayout;
+    private AsyncTask trailerTask, reviewTask;
+    private LinearLayout trailerLinearLayout, reviewLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +43,8 @@ public class DetailsActivity extends AppCompatActivity {
         mSypnosis = (TextView) findViewById(R.id.display_movie_sypnosis);
         mRating = (TextView) findViewById(R.id.display_movie_rating);
         mReleasedDate = (TextView) findViewById(R.id.display_movie_date);
-        linearLayout = (LinearLayout) findViewById(R.id.linear_layout_trailer);
+        trailerLinearLayout = (LinearLayout) findViewById(R.id.linear_layout_trailer);
+        reviewLinearLayout = (LinearLayout) findViewById(R.id.linear_layout_reviews);
 
 
         Intent intent = getIntent();
@@ -98,27 +89,51 @@ public class DetailsActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(ArrayList<String> lists) {
-
-
                 for (int i = 0; i < lists.size(); i++) {
 
-                    View view = LayoutInflater.from(DetailsActivity.this).inflate(R.layout.list_trailer, linearLayout, false);
-                    String trailerKey = lists.get(i);
-                    linearLayout.addView(view);
+                    View view = LayoutInflater.from(DetailsActivity.this).inflate(R.layout.list_trailer, trailerLinearLayout, false);
                     TextView trailerNumber = (TextView) view.findViewById(R.id.trailer_number);
+                    trailerLinearLayout.addView(view);
+
+                    String trailerKey = lists.get(i);
+                    view.setTag(trailerKey);
                     int trailerCount = i + 1;
                     trailerNumber.setText("Trailer " + trailerCount);
-                    view.setTag(trailerKey);
+
                     Log.v("TEST", "TAG for position: " + i + view.getTag());
+
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             String youTubeKEY = (String) v.getTag();
-                            Uri uri = Uri.parse("https://www.youtube.com/watch?v="+youTubeKEY);
-                            Intent trailerIntent = new Intent(Intent.ACTION_VIEW,uri);
+                            Uri uri = Uri.parse("https://www.youtube.com/watch?v=" + youTubeKEY);
+                            Intent trailerIntent = new Intent(Intent.ACTION_VIEW, uri);
                             startActivity(trailerIntent);
                         }
                     });
+                }
+            }
+        }.execute();
+
+
+        reviewTask = new AsyncTask<Void, Void, ArrayList<String[]>>() {
+            @Override
+            protected ArrayList<String[]> doInBackground(Void[] params) {
+                return MovieUtil.retrieveReview(selectedMovieID);
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<String[]> lists) {
+                for (int i = 0; i < lists.size(); i++) {
+
+                    View view = LayoutInflater.from(DetailsActivity.this).inflate(R.layout.list_review, null);
+                    TextView authorTV = (TextView)view.findViewById(R.id.review_author_TV);
+                    TextView contentTV = (TextView)view.findViewById(R.id.review_content_TV);
+                    reviewLinearLayout.addView(view);
+                    String author = lists.get(i)[0];
+                    String content = lists.get(i)[1];
+                    authorTV.setText("By: " + author);
+                    contentTV.setText(content);
                 }
             }
         }.execute();
