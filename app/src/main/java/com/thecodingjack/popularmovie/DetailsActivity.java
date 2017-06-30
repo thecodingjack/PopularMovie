@@ -1,6 +1,8 @@
 package com.thecodingjack.popularmovie;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.SQLException;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,13 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.thecodingjack.popularmovie.data.MovieContract;
 import com.thecodingjack.popularmovie.utilities.MovieUtil;
 
 import java.text.ParseException;
@@ -23,6 +25,11 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static com.thecodingjack.popularmovie.MainActivity.EXTRA_MOVIEID;
+import static com.thecodingjack.popularmovie.MainActivity.EXTRA_POSTERURL;
+import static com.thecodingjack.popularmovie.MainActivity.EXTRA_RATING;
+import static com.thecodingjack.popularmovie.MainActivity.EXTRA_RELEASEDDATE;
+import static com.thecodingjack.popularmovie.MainActivity.EXTRA_SYPNOSIS;
+import static com.thecodingjack.popularmovie.MainActivity.EXTRA_TITLE;
 
 public class DetailsActivity extends AppCompatActivity {
     private TextView mMovieTitle;
@@ -31,9 +38,10 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView mRating;
     private TextView mReleasedDate;
     private int selectedMovieID;
+    private String titleInput,posterURL,sypnosisInput,ratingInput,dateInput;
     private AsyncTask trailerTask, reviewTask;
     private LinearLayout trailerLinearLayout, reviewLinearLayout;
-private Button favoriteButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +55,6 @@ private Button favoriteButton;
         mReleasedDate = (TextView) findViewById(R.id.display_movie_date);
         trailerLinearLayout = (LinearLayout) findViewById(R.id.linear_layout_trailer);
         reviewLinearLayout = (LinearLayout) findViewById(R.id.linear_layout_reviews);
-        favoriteButton = (Button)findViewById(R.id.action_favorite);
 
 
         Intent intent = getIntent();
@@ -55,33 +62,33 @@ private Button favoriteButton;
             selectedMovieID = intent.getIntExtra(EXTRA_MOVIEID, -1);
         }
 
-        if (intent.hasExtra("title")) {
-            String displayInput = intent.getStringExtra("title");
-            mMovieTitle.setText(displayInput);
+        if (intent.hasExtra(EXTRA_TITLE)) {
+            titleInput = intent.getStringExtra(EXTRA_TITLE);
+            mMovieTitle.setText(titleInput);
         }
-        if (intent.hasExtra("posterURL")) {
-            String posterURL = intent.getStringExtra("posterURL");
+        if (intent.hasExtra(EXTRA_POSTERURL)) {
+            posterURL = intent.getStringExtra(EXTRA_POSTERURL);
             Picasso.with(this).load(posterURL).into(mPosterImage);
         }
-        if (intent.hasExtra("sypnosis")) {
-            String displayInput = intent.getStringExtra("sypnosis");
-            mSypnosis.setText(displayInput);
+        if (intent.hasExtra(EXTRA_SYPNOSIS)) {
+            sypnosisInput = intent.getStringExtra(EXTRA_SYPNOSIS);
+            mSypnosis.setText(sypnosisInput);
         }
-        if (intent.hasExtra("rating")) {
-            String displayInput = intent.getStringExtra("rating") + "/10";
-            mRating.setText(displayInput);
+        if (intent.hasExtra(EXTRA_RATING)) {
+            ratingInput = intent.getStringExtra(EXTRA_RATING);
+            mRating.setText(ratingInput + "/10");
         }
-        if (intent.hasExtra("releasedDate")) {
-            String displayInput = String.format(intent.getStringExtra("releasedDate"));
+        if (intent.hasExtra(EXTRA_RELEASEDDATE)) {
+            dateInput = String.format(intent.getStringExtra(EXTRA_RELEASEDDATE));
             SimpleDateFormat df = new SimpleDateFormat("yyyy");
             Date date;
             try {
-                date = df.parse(displayInput);
-                displayInput = df.format(date);
+                date = df.parse(dateInput);
+                dateInput = df.format(date);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            mReleasedDate.setText(displayInput);
+            mReleasedDate.setText(dateInput);
         }
 
         trailerTask = new AsyncTask<Void, Void, ArrayList<String>>() {
@@ -145,6 +152,23 @@ private Button favoriteButton;
     }
 
     public void markFavorite(View view){
-        Toast.makeText(this,"Movie saved to Favorite!",Toast.LENGTH_SHORT).show();
+        try{
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIEID,selectedMovieID);
+            contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIETITLE,titleInput);
+            contentValues.put(MovieContract.MovieEntry.COLUMN_POSTERURL,posterURL);
+            contentValues.put(MovieContract.MovieEntry.COLUMN_SYPNOSIS,sypnosisInput);
+            contentValues.put(MovieContract.MovieEntry.COLUMN_RATING,Double.parseDouble(ratingInput));
+            contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASED_DATE,dateInput);
+
+            Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,contentValues);
+            if(uri != null) {
+                Toast.makeText(this,"Movie saved to Favorite!", Toast.LENGTH_SHORT).show();
+            }
+        }catch (SQLException e){
+            Toast.makeText(this, "Movie is already saved", Toast.LENGTH_SHORT).show();
+        }
+
+        finish();
     }
 }

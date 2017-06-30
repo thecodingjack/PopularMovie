@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import static com.thecodingjack.popularmovie.data.MovieContract.MovieEntry.TABLE_NAME;
+
 /**
  * Created by lamkeong on 6/30/2017.
  */
@@ -43,7 +45,7 @@ public class MovieContentProvider extends ContentProvider {
         Uri returnUri;
         switch (match) {
             case MOVIE_DIRECTORY: {
-                long id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
+                long id = db.insert(TABLE_NAME, null, values);
                 if (id > 0) {
                     returnUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
                 } else {
@@ -61,7 +63,19 @@ public class MovieContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return null;
+        mdbHelper = new MovieOpenHelper(getContext());
+        final SQLiteDatabase db = mdbHelper.getReadableDatabase();
+        int match = sUriMatcher.match(uri);
+        Cursor returnCursor;
+        switch (match){
+            case MOVIE_DIRECTORY:
+                returnCursor = db.query(TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        returnCursor.setNotificationUri(getContext().getContentResolver(),uri);
+        return returnCursor;
     }
 
     @Override
@@ -78,7 +92,7 @@ public class MovieContentProvider extends ContentProvider {
         switch (match){
             case MOVIE_WITH_ID :{
                 String id = uri.getPathSegments().get(1);
-                movieDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME,"_id=?",new String[]{id});
+                movieDeleted = db.delete(TABLE_NAME,"_id=?",new String[]{id});
                 break;
             }
             default:

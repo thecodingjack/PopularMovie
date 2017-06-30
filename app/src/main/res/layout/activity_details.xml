@@ -52,7 +52,6 @@
                     android:layout_height="wrap_content"
                     tools:text="6.8/10"/>
                 <Button
-                    android:id="@+id/action_favorite"
                     android:onClick="markFavorite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

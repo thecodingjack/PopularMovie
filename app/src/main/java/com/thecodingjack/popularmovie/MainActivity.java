@@ -62,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 setTitle(R.string.app_name_rating);
                 new FetchMovieTask(this, this, mRecyclerView).execute(queryParam);
                 break;
+            case(R.id.action_sortByFavorites):
+                setTitle(R.string.app_name_favorite);
+                new QueryMovieTask(this,this,mRecyclerView).execute();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

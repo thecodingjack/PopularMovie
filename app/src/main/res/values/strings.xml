@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">Popular Movies</string>
     <string name="app_name_rating">Top-rated Movies</string>
+    <string name="app_name_favorite">Your Favorite Movies</string>
     <string name="popular">Sort by Popularity</string>
-    <string name="API_key">1f7e017cadb0f3c96db924c8672a3328</string>
     <string name="top_rated">Sort by Ratings</string>
     <string name="movie_details">Movie Details</string>
+    <string name="sort_favorites">Sort by Favorites</string>
 </resources>
