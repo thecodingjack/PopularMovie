@@ -8,9 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.thecodingjack.popularmovie.utilities.MovieUtil;
@@ -31,7 +33,7 @@ public class DetailsActivity extends AppCompatActivity {
     private int selectedMovieID;
     private AsyncTask trailerTask, reviewTask;
     private LinearLayout trailerLinearLayout, reviewLinearLayout;
-
+private Button favoriteButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +47,7 @@ public class DetailsActivity extends AppCompatActivity {
         mReleasedDate = (TextView) findViewById(R.id.display_movie_date);
         trailerLinearLayout = (LinearLayout) findViewById(R.id.linear_layout_trailer);
         reviewLinearLayout = (LinearLayout) findViewById(R.id.linear_layout_reviews);
+        favoriteButton = (Button)findViewById(R.id.action_favorite);
 
 
         Intent intent = getIntent();
@@ -139,5 +142,9 @@ public class DetailsActivity extends AppCompatActivity {
         }.execute();
 
 
+    }
+
+    public void markFavorite(View view){
+        Toast.makeText(this,"Movie saved to Favorite!",Toast.LENGTH_SHORT).show();
     }
 }

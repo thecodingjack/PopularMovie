@@ -22,6 +22,10 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
+        <provider
+            android:authorities="com.thecodingjack.popularmovie"
+            android:name="com.thecodingjack.popularmovie.data.MovieContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

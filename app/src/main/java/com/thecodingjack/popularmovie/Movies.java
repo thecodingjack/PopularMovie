@@ -14,7 +14,7 @@ public class Movies implements Parcelable {
     private String synopsis;
     private double rating;
     private String releasedDate;
-    private String[] trailerKeyArray;
+
 
     public Movies(int movieID, String movieTitle, String posterURL, String synopsis, double rating, String releasedDate) {
         this.movieID = movieID;
