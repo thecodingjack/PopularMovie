@@ -56,7 +56,6 @@ public class MovieContentProvider extends ContentProvider {
                     db.setTransactionSuccessful();
                 } finally {
                     db.endTransaction();
-
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return returnUri;

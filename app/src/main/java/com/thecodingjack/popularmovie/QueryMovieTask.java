@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.thecodingjack.popularmovie.data.MovieContract;
 
@@ -21,6 +20,7 @@ public class QueryMovieTask extends AsyncTask<Void, Void, List<Movies>> {
     private Context context;
     private MovieAdapter.MovieClickListener mMovieClickListener;
     private RecyclerView mRecyclerView;
+    private int savedScrollPosition;
 
     public static final int INDEX_MOVIEID = 1;
     public static final int INDEX_MOVIETITLE = 2;
@@ -29,10 +29,11 @@ public class QueryMovieTask extends AsyncTask<Void, Void, List<Movies>> {
     public static final int INDEX_RATING = 5;
     public static final int INDEX_RELEASED_DATE = 6;
 
-    public QueryMovieTask(Context ctx, MovieAdapter.MovieClickListener movieClickListener, RecyclerView view) {
+    public QueryMovieTask(Context ctx, MovieAdapter.MovieClickListener movieClickListener, RecyclerView view, int scrollPosition) {
         context = ctx;
         mMovieClickListener = movieClickListener;
         mRecyclerView = view;
+        savedScrollPosition = scrollPosition;
     }
 
     @Override
@@ -41,7 +42,7 @@ public class QueryMovieTask extends AsyncTask<Void, Void, List<Movies>> {
         ArrayList<Movies> moviesList = new ArrayList<>();
         try {
             cursor = context.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, null, null, null, MovieContract.MovieEntry._ID + " DESC");
-            cursor.moveToFirst();
+            cursor.moveToPosition(-1);
             while (cursor.moveToNext()) {
                 int movieID = cursor.getInt(INDEX_MOVIEID);
                 String movieTitle = cursor.getString(INDEX_MOVIETITLE);
@@ -70,9 +71,14 @@ public class QueryMovieTask extends AsyncTask<Void, Void, List<Movies>> {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mMovieAdapter);
-
-
         mMovieAdapter.setMoviesList(moviesList);
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.smoothScrollBy(0, savedScrollPosition);
+                ;
+            }
+        });
 
     }
 }

@@ -18,11 +18,13 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<Movies>> {
     private Context context;
     private MovieAdapter.MovieClickListener mMovieClickListener;
     private RecyclerView mRecyclerView;
+    private int savedScrollPosition;
 
-    public FetchMovieTask(Context ctx, MovieAdapter.MovieClickListener movieClickListener,RecyclerView view) {
+    public FetchMovieTask(Context ctx, MovieAdapter.MovieClickListener movieClickListener, RecyclerView view, int scrollPosition) {
         context = ctx;
         mMovieClickListener = movieClickListener;
-        mRecyclerView =view;
+        mRecyclerView = view;
+        savedScrollPosition = scrollPosition;
     }
 
     @Override
@@ -42,15 +44,21 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<Movies>> {
 
     @Override
     protected void onPostExecute(List<Movies> moviesList) {
-        if (moviesList == null){
+        if (moviesList == null) {
             return;
         }
 
-        MovieAdapter mMovieAdapter = new MovieAdapter(mMovieClickListener,moviesList);
+        MovieAdapter mMovieAdapter = new MovieAdapter(mMovieClickListener, moviesList);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mMovieAdapter);
         mMovieAdapter.setMoviesList(moviesList);
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.smoothScrollBy(0, savedScrollPosition);
+            }
+        });
 
     }
 }

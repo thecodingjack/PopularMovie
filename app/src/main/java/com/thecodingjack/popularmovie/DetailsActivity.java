@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -43,10 +42,9 @@ public class DetailsActivity extends AppCompatActivity {
     private String titleInput, posterURL, sypnosisInput, ratingInput, dateInput;
     private AsyncTask trailerTask, reviewTask;
     private LinearLayout trailerLinearLayout, reviewLinearLayout;
-    private int scrollPosition;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         setTitle(R.string.movie_details);
@@ -125,57 +123,42 @@ public class DetailsActivity extends AppCompatActivity {
                         }
                     });
                 }
+                reviewTask = new AsyncTask<Void, Void, ArrayList<String[]>>() {
+                    @Override
+                    protected ArrayList<String[]> doInBackground(Void[] params) {
+                        return MovieUtil.retrieveReview(selectedMovieID);
+                    }
+
+                    @Override
+                    protected void onPostExecute(ArrayList<String[]> lists) {
+                        for (int i = 0; i < lists.size(); i++) {
+
+                            View view = LayoutInflater.from(DetailsActivity.this).inflate(R.layout.list_review, null);
+                            TextView authorTV = (TextView) view.findViewById(R.id.review_author_TV);
+                            TextView contentTV = (TextView) view.findViewById(R.id.review_content_TV);
+                            reviewLinearLayout.addView(view);
+                            String author = lists.get(i)[0];
+                            String content = lists.get(i)[1];
+                            authorTV.setText("By: " + author);
+                            contentTV.setText(content);
+                        }
+                        mScrollView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (savedInstanceState.containsKey("scrollPositionY")) {
+                                        int scrollPositionY = savedInstanceState.getInt("scrollPositionY");
+                                        mScrollView.smoothScrollTo(0, scrollPositionY);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                }.execute();
             }
         }.execute();
-
-        reviewTask = new AsyncTask<Void, Void, ArrayList<String[]>>() {
-            @Override
-            protected ArrayList<String[]> doInBackground(Void[] params) {
-                return MovieUtil.retrieveReview(selectedMovieID);
-            }
-
-            @Override
-            protected void onPostExecute(ArrayList<String[]> lists) {
-                for (int i = 0; i < lists.size(); i++) {
-
-                    View view = LayoutInflater.from(DetailsActivity.this).inflate(R.layout.list_review, null);
-                    TextView authorTV = (TextView) view.findViewById(R.id.review_author_TV);
-                    TextView contentTV = (TextView) view.findViewById(R.id.review_content_TV);
-                    reviewLinearLayout.addView(view);
-                    String author = lists.get(i)[0];
-                    String content = lists.get(i)[1];
-                    authorTV.setText("By: " + author);
-                    contentTV.setText(content);
-                }
-            }
-        }.execute();
-        try {
-            if (savedInstanceState.containsKey("scrollPositionY")) {
-                int scrollPositionY = savedInstanceState.getInt("scrollPositionY");
-                Log.v("TEST", "Saved Scroll Position =" + scrollPositionY);
-                scrollPosition = scrollPositionY;
-                mScrollView.scrollTo(100, scrollPositionY);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        try {
-            if (savedInstanceState.containsKey("scrollPositionY")) {
-                int scrollPositionY = savedInstanceState.getInt("scrollPositionY");
-                Log.v("TEST", "Saved Scroll Position =" + scrollPositionY);
-                scrollPosition = scrollPositionY;
-                mScrollView.scrollTo(100, scrollPositionY);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
 
@@ -202,8 +185,6 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         int scrollPositionY = mScrollView.getScrollY();
-        Log.v("TEST", "Scroll positionXY: " + scrollPositionY);
         outState.putInt("scrollPositionY", scrollPositionY);
     }
-
 }
