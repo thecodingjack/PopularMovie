@@ -45,19 +45,25 @@ public class MovieContentProvider extends ContentProvider {
         Uri returnUri;
         switch (match) {
             case MOVIE_DIRECTORY: {
-                long id = db.insert(TABLE_NAME, null, values);
-                if (id > 0) {
-                    returnUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
-                } else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                db.beginTransaction();
+                try {
+                    long id = db.insert(TABLE_NAME, null, values);
+                    if (id > 0) {
+                        returnUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
+                    } else {
+                        throw new android.database.SQLException("Failed to insert row into " + uri);
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+
                 }
-                break;
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnUri;
             }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri,null);
-        return returnUri;
     }
 
     @Nullable
@@ -67,14 +73,14 @@ public class MovieContentProvider extends ContentProvider {
         final SQLiteDatabase db = mdbHelper.getReadableDatabase();
         int match = sUriMatcher.match(uri);
         Cursor returnCursor;
-        switch (match){
+        switch (match) {
             case MOVIE_DIRECTORY:
-                returnCursor = db.query(TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                returnCursor = db.query(TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        returnCursor.setNotificationUri(getContext().getContentResolver(),uri);
+        returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return returnCursor;
     }
 
@@ -89,17 +95,17 @@ public class MovieContentProvider extends ContentProvider {
         final SQLiteDatabase db = mdbHelper.getWritableDatabase();
         int match = sUriMatcher.match(uri);
         int movieDeleted;
-        switch (match){
-            case MOVIE_WITH_ID :{
+        switch (match) {
+            case MOVIE_WITH_ID: {
                 String id = uri.getPathSegments().get(1);
-                movieDeleted = db.delete(TABLE_NAME,"_id=?",new String[]{id});
+                movieDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
                 break;
             }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        if (movieDeleted !=0){
-            getContext().getContentResolver().notifyChange(uri,null);
+        if (movieDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
         }
         return movieDeleted;
     }

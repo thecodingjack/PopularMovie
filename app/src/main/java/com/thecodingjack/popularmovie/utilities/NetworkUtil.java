@@ -26,7 +26,7 @@ import java.util.Scanner;
 public final class NetworkUtil {
 
     private final static String BASE_URL = "https://api.themoviedb.org/3/movie";
-    private final static String API_KEY = "";//request from tmdb.org
+    private final static String API_KEY = "1f7e017cadb0f3c96db924c8672a3328";//request from tmdb.org
     private final static String POSTER_BASE_URL = "http://image.tmdb.org/t/p/w185";
     public static final String POPULAR_PARAM = "popular";
     public static final String TOP_RATED_PARAM = "top_rated";
@@ -94,8 +94,6 @@ public final class NetworkUtil {
             String releasedDate = movieObject.getString("release_date");
             Movies newMovie = new Movies(movieID,movieTitle, posterPath, sypnosis, rating, releasedDate);
             moviesList.add(newMovie);
-
-
         }
         return moviesList;
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.thecodingjack.popularmovie.utilities.NetworkUtil;
 
@@ -51,8 +50,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<Movies>> {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mMovieAdapter);
-
-
         mMovieAdapter.setMoviesList(moviesList);
 
     }

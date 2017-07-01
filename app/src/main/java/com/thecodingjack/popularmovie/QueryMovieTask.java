@@ -50,12 +50,6 @@ public class QueryMovieTask extends AsyncTask<Void, Void, List<Movies>> {
                 double rating = cursor.getDouble(INDEX_RATING);
                 String releasedDate = cursor.getString(INDEX_RELEASED_DATE);
                 Movies movies = new Movies(movieID, movieTitle, posterURL, synopsis, rating, releasedDate);
-                Log.v("TEST", "Column 1:" + cursor.getString(0) +
-                        "\nColumn 2:" + cursor.getString(1) +
-                        "\nColumn 3:" + cursor.getString(2) +
-                        "\nColumn 4:" + cursor.getString(3) +
-                        "\nColumn 5:" + cursor.getString(4) +
-                        "\nColumn 6:" + cursor.getString(5));
                 moviesList.add(movies);
             }
             return moviesList;
