@@ -163,11 +163,21 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mScrollView.scrollTo(100, scrollPosition);
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        try {
+            if (savedInstanceState.containsKey("scrollPositionY")) {
+                int scrollPositionY = savedInstanceState.getInt("scrollPositionY");
+                Log.v("TEST", "Saved Scroll Position =" + scrollPositionY);
+                scrollPosition = scrollPositionY;
+                mScrollView.scrollTo(100, scrollPositionY);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
+
 
     public void markFavorite(View view) {
         try {

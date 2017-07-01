@@ -27,7 +27,32 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movie);
-        new FetchMovieTask(this, this, mRecyclerView).execute(queryParam);
+        new FetchMovieTask(this, this, mRecyclerView).execute(POPULAR_PARAM);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        try{
+            String savedQueryParam = savedInstanceState.getString("savedQueryParam");
+            int scrollPosition = savedInstanceState.getInt("scrollPosition");
+            if (savedQueryParam.equals("")){
+                setTitle(R.string.app_name_favorite);
+                new QueryMovieTask(this,this,mRecyclerView).execute();
+                mRecyclerView.scrollTo(0,scrollPosition);
+            } else if (savedQueryParam.equals(POPULAR_PARAM)){
+                setTitle(R.string.app_name);
+                new FetchMovieTask(this, this, mRecyclerView).execute(savedQueryParam);
+                mRecyclerView.scrollTo(0,scrollPosition);
+            } else if (savedQueryParam.equals(TOP_RATED_PARAM)){
+                setTitle(R.string.app_name_rating);
+                new FetchMovieTask(this, this, mRecyclerView).execute(savedQueryParam);
+                mRecyclerView.scrollTo(0,scrollPosition);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -54,8 +79,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         switch (itemID) {
             case (R.id.action_sortByPopular):
                 queryParam = POPULAR_PARAM;
-                new FetchMovieTask(this, this, mRecyclerView).execute(queryParam);
                 setTitle(R.string.app_name);
+                new FetchMovieTask(this, this, mRecyclerView).execute(queryParam);
                 break;
             case (R.id.action_sortByRating):
                 queryParam = TOP_RATED_PARAM;
@@ -63,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 new FetchMovieTask(this, this, mRecyclerView).execute(queryParam);
                 break;
             case(R.id.action_sortByFavorites):
+                queryParam = "";
                 setTitle(R.string.app_name_favorite);
                 new QueryMovieTask(this,this,mRecyclerView).execute();
                 break;
@@ -70,5 +96,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int scrollPosition = mRecyclerView.getScrollY();
+        outState.putString("savedQueryParam",queryParam);
+        outState.putInt("scrollPosition",scrollPosition);
+
+    }
 }
 
